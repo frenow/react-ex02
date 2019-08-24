@@ -13,7 +13,6 @@ export function App() {
           <Link to="/users">Users</Link>
         </li>
       </ul>
-
       <ApplicationRoutes />
     </div>
   );
