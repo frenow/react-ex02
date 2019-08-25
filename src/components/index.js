@@ -1,3 +1,2 @@
-export { users } from "./users";
+export { Users } from "./users";
 export { home } from "./home";
-export { busca } from "./busca";
