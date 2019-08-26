@@ -64,14 +64,15 @@ export class Users extends React.Component {
   
 deletUser(e, param) {
    let users = this.state.users;
-
+   let result = this.state.users;
    for(var i=0 ; i < users.length; i++)
    {
      if(users[i].name === param){       
         users.splice(i, 1);
      }
-   }   
-   this.setState({users});
+   }  
+   result = users; 
+   this.setState({users, result});
    e.preventDefault();
 }
 
