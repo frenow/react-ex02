@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import {Link} from 'react-router-dom';
 
-let users = [
+var listUsuarios = [
    {
      name: 'Raul',
      age: 29,
@@ -29,74 +29,66 @@ let users = [
     },
 ];
 
-export class Users extends React.Component {
+export function Users(props) {
     
-   constructor(props) {
-      super(props);
+  const [usersTable, setUsersTable] = useState(listUsuarios);
+  //const [usersItem, setUsersItem] = useState([]);
 
-      this.state = {
-          users: users,
-          result: users,
-      };
-      this.filterList = this.filterList.bind(this);
-  }
-
-//  componentWillReceiveProps(nextProps) {
-//      this.setState({
-//          users: nextProps.users,            
-//      });
-//  }
-
-//    componentDidUpdate(nextProps) {
-//          this.setState({
-//            users: nextProps.users,             
-//         });
-//   }  
-
-  filterList(event) {
-      let value = event.target.value;
-      let users = this.state.users, result=[];
-      result = users.filter((user)=>{
-          return user.name.toLowerCase().search(value) !== -1;
-      });
-      this.setState({result});
-  }
+// useEffect(() => {
+//      setUsersTable(listUsuarios); 
+// }
+//,[usersTable]);
   
-deletUser(e, param) {
-   let users = this.state.users;
-   let result = this.state.users;
-   for(var i=0 ; i < users.length; i++)
-   {
-     if(users[i].name === param){       
-        users.splice(i, 1);
-     }
-   }  
-   result = users; 
-   this.setState({users, result});
-   e.preventDefault();
+  function deletUser(e, param) {
+    for(var i=0 ; i < listUsuarios.length; i++)
+    {
+      if(listUsuarios[i].name === param){       
+        listUsuarios.splice(i, 1);
+      }
+    } 
+    console.log(...listUsuarios); 
+    setUsersTable(usersTable.filter(user => user.name !== param));
+    e.preventDefault();
+ }
+
+ function filterUser(event) {
+  const value = event.target.value;
+  let result = usersTable;
+
+  result = listUsuarios.filter((usuario)=>{
+      return usuario.name.toLowerCase().search(value) !== -1;
+  });
+ 
+  console.log(...result);
+  setUsersTable(result);
+
+ }
+ const nome = props.match.params.name;
+
+ if (nome) {
+  return ( <div><h2>{nome}</h2></div>)
 }
 
-render(){
    
-   const nome = this.props.match.params.name;
-
-   const userList = this.state.result.map((user) => {
-     return <tr><td><Link to={'/users/'+user.name}>{user.name}</Link></td><td>{user.age}</td><td>{user.email}</td><td><button onClick={(e) => this.deletUser(e, user.name)}>Deletar</button></td></tr>;
-   });
-
-   if (nome) {
-      return ( <div><h2>{nome}</h2></div>)
-   }
-
-  return(<div>
-    <input type="text" placeholder="Search" onChange={this.filterList}/>
-                <table>
-                  <tbody>
-                     <tr><th>Nome</th><th>Idade</th><th>Email</th><th>Delete</th></tr>
-                     {userList}
-                  </tbody>
-               </table>
+//   const nome = this.props.match.params.name;
+  return(
+  <>
+  <div>
+    <input type="text" placeholder="Search" onChange={e => filterUser(e)}/>
+    <table>
+          <tbody>
+          <tr><th>Nome</th><th>Idade</th><th>Email</th><th>Delete</th></tr>
+          {usersTable.map(repo => (
+            <tr>
+            <td><Link to={'/users/'+repo.name}>{repo.name}</Link></td>
+            <td>{repo.age}</td>
+            <td>{repo.email}</td>
+            <td><button onClick={e => deletUser(e, repo.name)}>Deletar</button></td>
+            </tr>
+           ))}
+           </tbody>               
+    </table>
     </div>
+    </>
   );
-}
 }
